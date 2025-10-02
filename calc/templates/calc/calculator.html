@@ -14,3 +14,24 @@
   </style>
 </head>
 <body>
+  <div class="calc-container">
+    <h2>Simple Calculator</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      <label>First number</label>
+      <input type="number" step="any" name="num1" placeholder="e.g. 12.5" required>
+
+      <label>Second number</label>
+      <input type="number" step="any" name="num2" placeholder="e.g. 3.14" required>
+
+      <label>Operator</label>
+      <select name="operator">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">×</option>
+        <option value="/">÷</option>
+      </select>
+
+      <button type="submit">Calculate</button>
+    </form>
