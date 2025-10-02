@@ -35,3 +35,14 @@
 
       <button type="submit">Calculate</button>
     </form>
+
+    {% if result is not None %}
+      <div class="result"><strong>Result:</strong> {{ result }}</div>
+    {% endif %}
+
+    {% if error %}
+      <div class="error"><strong>{{ error }}</strong></div>
+    {% endif %}
+  </div>
+</body>
+</html>
