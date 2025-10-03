@@ -12,6 +12,10 @@ def calculator(request):
             operator = request.POST.get("operator", "+")
 
            
+           # convert safely
+            num1 = float(num1_raw) if num1_raw != "" else 0.0
+            num2 = float(num2_raw) if num2_raw != "" else 0.0
+            
             # Basic operations
             if operator == "+":
                 result = num1 + num2
