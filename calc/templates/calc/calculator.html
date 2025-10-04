@@ -48,7 +48,15 @@
       <h3>Result: {{ result }}</h3>
     {% endif %}
   </div>
-
+   <script>
+    const display = document.getElementById("display");
+    function press(value) {
+      display.value += value;
+    }
+    function clearDisplay() {
+      display.value = "";
+    }
+  </script>
 
   </body>
 </html>
