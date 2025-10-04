@@ -4,13 +4,65 @@
   <meta charset="utf-8" />
   <title>Django Calculator</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    body { font-family: Arial, sans-serif; margin: 40px; background:#f7f7f7; }
-    .calc-container { max-width: 420px; margin: auto; padding: 24px; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-    input, select, button { margin: 8px 0; padding: 10px; width: 100%; box-sizing: border-box; font-size: 16px; }
-    button { cursor: pointer; }
-    .result { margin-top: 12px; padding: 10px; background:#f2f8ff; border-radius:6px; }
-    .error { margin-top: 12px; padding: 10px; background:#ffecec; border-radius:6px; color:#a00; }
+   <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .calculator {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .display {
+      width: 260px;
+      height: 60px;
+      background: #000;
+      color: #0f0;
+      text-align: right;
+      font-size: 1.8em;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      height: 60px;
+      font-size: 1.2em;
+      background: #333;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #555;
+    }
+
+    .equals {
+      background: #ff4081;
+    }
+
+    .equals:hover {
+      background: #e91e63;
+    }
   </style>
 </head>
 <body>
