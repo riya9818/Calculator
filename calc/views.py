@@ -6,62 +6,33 @@ def calculator(request):
     error = None
 
     if request.method == "POST":
+        expression = request.POST.get("expression", "").strip()
+
         try:
-            num1_raw = request.POST.get("num1", "").strip()
-            num2_raw = request.POST.get("num2", "").strip()
-            operator = request.POST.get("operator", "+")
+            # Use a safe evaluation method
+            allowed_names = {
+                "sqrt": math.sqrt,
+                "pow": math.pow,
+                "log": math.log,
+                "sin": lambda x: math.sin(math.radians(x)),
+                "cos": lambda x: math.cos(math.radians(x)),
+                "tan": lambda x: math.tan(math.radians(x)),
+                "__builtins__": {}
+            }
 
-           
-           # convert safely
-            num1 = float(num1_raw) if num1_raw != "" else 0.0
-            num2 = float(num2_raw) if num2_raw != "" else 0.0
-            
-            # Basic operations
-            if operator == "+":
-                result = num1 + num2
-            elif operator == "-":
-                result = num1 - num2
-            elif operator == "*":
-                result = num1 * num2
-            elif operator == "/":
-                if num2 == 0:
-                    error = "Error: Division by zero"
-                else:
-                    result = num1 / num2
+            result = eval(expression, {"__builtins__": None}, allowed_names)
 
-            # Scientific operations
-            elif operator == "sqrt":
-                result = math.sqrt(num1)
-            elif operator == "pow":
-                result = math.pow(num1, num2)
-            elif operator == "log":
-                if num1 <= 0:
-                    error = "Error: log requires positive number"
-                else:
-                    result = math.log(num1, num2 if num2 != 0 else math.e)
-            elif operator == "sin":
-                result = math.sin(math.radians(num1))
-            elif operator == "cos":
-                result = math.cos(math.radians(num1))
-            elif operator == "tan":
-                result = math.tan(math.radians(num1))
-            else:
-                error = "Unknown operator"
+            # Save in session history
+            history = request.session.get("history", [])
+            history.insert(0, f"{expression} = {result}")
+            request.session["history"] = history[:10]
 
-            # ✅ Save history in session
-            if error is None:
-                history = request.session.get("history", [])
-                if operator in ["sqrt", "sin", "cos", "tan", "log"]:
-                    history.insert(0, f"{operator}({num1}) = {result}")
-                elif operator == "pow":
-                    history.insert(0, f"{num1}^{num2} = {result}")
-                else:
-                    history.insert(0, f"{num1} {operator} {num2} = {result}")
-                request.session["history"] = history[:10]
+        except ZeroDivisionError:
+            error = "Error: Division by zero"
         except ValueError:
-            error = "Invalid number input"
-        except Exception as e:
-            error = f"Error: {e}"
+            error = "Error: Invalid input"
+        except Exception:
+            error = "Error: Invalid expression"
 
     history = request.session.get("history", [])
     return render(request, "calc/calculator.html", {
