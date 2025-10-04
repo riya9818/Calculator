@@ -63,13 +63,27 @@
     .equals:hover {
       background: #e91e63;
     }
+
+    #history {
+      display: none;
+      margin-top: 15px;
+      background: #111;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    #history ul {
+      padding-left: 20px;
+    }
+
   </style>
 </head>
 <body>
   <div class="calculator">
     <form method="POST">
       {% csrf_token %}
-      <input type="text" name="expression" id="display" class="display" readonly>
+      <!-- Display now shows result on submit -->
+      <input type="text" name="expression" id="display" class="display" value="{{ result|default:request.POST.expression }}" readonly>
 
       <div class="buttons">
         <button type="button" onclick="press('7')">7</button>
@@ -93,14 +107,24 @@
         <button type="submit" class="equals">=</button>
 
         <button type="button" onclick="clearDisplay()" style="grid-column: span 4; background:#f44336;">C</button>
+
+        <button type="button" onclick="toggleHistory()" style="grid-column: span 4; background:#2196f3;">History</button>
       </div>
     </form>
 
-    {% if result is not None %}
-      <h3>Result: {{ result }}</h3>
-    {% endif %}
+    <!-- History panel -->
+    <div id="history">
+      <h4>Last Calculations:</h4>
+      <ul>
+        {% for entry in history %}
+          <li>{{ entry }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
   </div>
-   <script>
+
+  <script>
     const display = document.getElementById("display");
     function press(value) {
       display.value += value;
@@ -108,7 +132,11 @@
     function clearDisplay() {
       display.value = "";
     }
-  </script>
 
-  </body>
+    function toggleHistory() {
+      const h = document.getElementById("history");
+      h.style.display = h.style.display === "none" ? "block" : "none";
+    }
+  </script>
+</body>
 </html>
