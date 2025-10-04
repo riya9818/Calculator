@@ -14,52 +14,41 @@
   </style>
 </head>
 <body>
-  <div class="calc-container">
-    <h2>Simple Calculator</h2>
-
-    <form method="post">
+  <div class="calculator">
+    <form method="POST">
       {% csrf_token %}
-      <label>First number</label>
-      <input type="number" step="any" name="num1" placeholder="e.g. 12.5" required>
+      <input type="text" name="expression" id="display" class="display" readonly>
 
-      <label>Second number</label>
-      <input type="number" step="any" name="num2" placeholder="e.g. 3.14" required>
+      <div class="buttons">
+        <button type="button" onclick="press('7')">7</button>
+        <button type="button" onclick="press('8')">8</button>
+        <button type="button" onclick="press('9')">9</button>
+        <button type="button" onclick="press('/')">÷</button>
 
-      <label>Operator</label>
-      <select name="operator">
-        <option value="+">+</option>
-        <option value="-">-</option>
-        <option value="*">×</option>
-        <option value="/">÷</option>
-        <option value="sqrt">√ (square root)</option>
-        <option value="pow">x^y (power)</option>
-        <option value="log">log (base)</option>
-        <option value="sin">sin(x)</option>
-        <option value="cos">cos(x)</option>
-        <option value="tan">tan(x)</option>
-      </select>
+        <button type="button" onclick="press('4')">4</button>
+        <button type="button" onclick="press('5')">5</button>
+        <button type="button" onclick="press('6')">6</button>
+        <button type="button" onclick="press('*')">×</button>
 
-      <button type="submit">Calculate</button>
+        <button type="button" onclick="press('1')">1</button>
+        <button type="button" onclick="press('2')">2</button>
+        <button type="button" onclick="press('3')">3</button>
+        <button type="button" onclick="press('-')">−</button>
+
+        <button type="button" onclick="press('0')">0</button>
+        <button type="button" onclick="press('.')">.</button>
+        <button type="button" onclick="press('+')">+</button>
+        <button type="submit" class="equals">=</button>
+
+        <button type="button" onclick="clearDisplay()" style="grid-column: span 4; background:#f44336;">C</button>
+      </div>
     </form>
 
     {% if result is not None %}
-      <div class="result"><strong>Result:</strong> {{ result }}</div>
-    {% endif %}
-
-    {% if error %}
-      <div class="error"><strong>{{ error }}</strong></div>
+      <h3>Result: {{ result }}</h3>
     {% endif %}
   </div>
-  {% if history %}
-  <div class="result" style="margin-top:20px;">
-    <h3>History (last {{ history|length }}):</h3>
-    <ul>
-      {% for entry in history %}
-        <li>{{ entry }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-{% endif %}
 
-</body>
+
+  </body>
 </html>
