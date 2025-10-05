@@ -14,11 +14,13 @@ def calculator(request):
                 expression.replace("÷", "/")
                 .replace("×", "*")
                 .replace("^", "**")
+                .replace("%", "/100")  # handle percentage
             )
 
             allowed = {k: v for k, v in math.__dict__.items() if not k.startswith("__")}
             allowed["abs"] = abs
             allowed["round"] = round
+            allowed["factorial"] = math.factorial
 
             result = eval(safe_expr, {"__builtins__": {}}, allowed)
 
