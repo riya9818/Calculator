@@ -32,7 +32,7 @@ def calculator(request):
         except Exception:
             result = "Error"
 
-    return render(request, "calculator.html", {
+    return render(request, "calc/calculator.html", {
         "result": result,
         "expression": expression,
         "history": history,

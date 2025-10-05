@@ -1,41 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Django Calculator</title>
+  <title>Django Scientific Calculator</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0a0;
+      --border: #333333;
+      --accent-blue: #3b82f6;
+      --accent-blue-hover: #2563eb;
+      --accent-red: #ef4444;
+      --accent-red-hover: #dc2626;
+      --display-bg: #0f0f0f;
+      --display-text: #00ff88;
+      --btn-primary: #252525;
+      --btn-hover: #353535;
+      --shadow: rgba(0, 0, 0, 0.5);
+    }
+
+    body.light {
+      --bg-primary: #f5f5f5;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #fafafa;
+      --text-primary: #0a0a0a;
+      --text-secondary: #666666;
+      --border: #e5e5e5;
+      --accent-blue: #2563eb;
+      --accent-blue-hover: #1d4ed8;
+      --accent-red: #dc2626;
+      --accent-red-hover: #b91c1c;
+      --display-bg: #fafafa;
+      --display-text: #0a0a0a;
+      --btn-primary: #f0f0f0;
+      --btn-hover: #e5e5e5;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #111;
-      color: #fff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    #themeToggle, #historyBtn {
+      background: var(--btn-primary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    #themeToggle:hover, #historyBtn:hover {
+      background: var(--btn-hover);
+      transform: translateY(-2px);
     }
 
     .calculator {
-      background: #222;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-      position: relative;
-      z-index: 2;
+      background: var(--bg-secondary);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
     }
 
     .display {
-      width: 260px;
-      height: 60px;
-      background: #000;
-      color: #0f0;
+      width: 100%;
+      height: 80px;
+      background: var(--display-bg);
+      color: var(--display-text);
       text-align: right;
-      font-size: 1.8em;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      margin-bottom: 15px;
+      font-size: 2.2em;
+      font-weight: 600;
+      padding: 20px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+      outline: none;
     }
 
     .buttons {
@@ -47,40 +139,73 @@
     button {
       height: 60px;
       font-size: 1.1em;
-      background: #333;
-      border: none;
-      border-radius: 8px;
-      color: white;
+      font-weight: 600;
+      background: var(--btn-primary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.15s ease;
+      font-family: 'Inter', sans-serif;
     }
 
     button:hover {
-      background: #555;
+      background: var(--btn-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     .equals {
-      background: #ff4081;
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      font-weight: 700;
     }
 
     .equals:hover {
-      background: #e91e63;
+      background: var(--accent-blue-hover);
+    }
+
+    .clear-btn {
+      background: var(--accent-red);
+      color: white;
+      border: none;
+    }
+
+    .clear-btn:hover {
+      background: var(--accent-red-hover);
+    }
+
+    .history-btn-main {
+      grid-column: span 4;
+      background: var(--bg-tertiary);
+      border: 2px dashed var(--border);
+    }
+
+    .history-btn-main:hover {
+      background: var(--btn-hover);
+      border-style: solid;
     }
 
     /* Sidebar History */
     #historySidebar {
       position: fixed;
-      right: -300px;
+      right: -380px;
       top: 0;
-      width: 300px;
+      width: 380px;
       height: 100%;
-      background: #111;
-      color: #fff;
-      padding: 20px;
-      box-shadow: -2px 0 10px rgba(255, 255, 255, 0.1);
-      transition: right 0.4s ease;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 30px;
+      box-shadow: -4px 0 20px var(--shadow);
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       overflow-y: auto;
-      z-index: 5;
+      z-index: 1000;
+      border-left: 1px solid var(--border);
     }
 
     #historySidebar.active {
@@ -88,103 +213,283 @@
     }
 
     #historySidebar h3 {
-      margin-top: 0;
-      border-bottom: 1px solid #444;
-      padding-bottom: 10px;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    #historySidebar ul {
+      list-style: none;
+      margin: 20px 0;
+    }
+
+    #historySidebar li {
+      background: var(--bg-tertiary);
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    #historySidebar li:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent-blue);
+      transform: translateX(-5px);
     }
 
     #closeHistory {
-      background: #f44336;
+      background: var(--accent-red);
       border: none;
       color: white;
-      padding: 8px 15px;
-      border-radius: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
       cursor: pointer;
-      margin-top: 10px;
+      width: 100%;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.2s ease;
     }
 
     #closeHistory:hover {
-      background: #d32f2f;
+      background: var(--accent-red-hover);
+      transform: translateY(-2px);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    @media (max-width: 640px) {
+      .calculator {
+        padding: 20px;
+      }
+
+      .title {
+        font-size: 22px;
+      }
+
+      button {
+        height: 55px;
+        font-size: 1em;
+      }
+
+      .display {
+        font-size: 1.8em;
+        height: 70px;
+      }
+
+      #historySidebar {
+        width: 100%;
+        right: -100%;
+      }
+
+      .controls {
+        gap: 8px;
+      }
+
+      #themeToggle, #historyBtn {
+        padding: 8px 12px;
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="calculator">
-    <form method="POST">
-      {% csrf_token %}
-      <input type="text" name="expression" id="display" class="display"
-       value="{{ result|default:expression }}" readonly>
+  <div class="overlay" id="overlay" onclick="closeHistory()"></div>
 
-      <div class="buttons">
-        <!-- Numbers -->
-        <button type="button" onclick="press('7')">7</button>
-        <button type="button" onclick="press('8')">8</button>
-        <button type="button" onclick="press('9')">9</button>
-        <button type="button" onclick="press('/')">÷</button>
-
-        <button type="button" onclick="press('4')">4</button>
-        <button type="button" onclick="press('5')">5</button>
-        <button type="button" onclick="press('6')">6</button>
-        <button type="button" onclick="press('*')">×</button>
-
-        <button type="button" onclick="press('1')">1</button>
-        <button type="button" onclick="press('2')">2</button>
-        <button type="button" onclick="press('3')">3</button>
-        <button type="button" onclick="press('-')">−</button>
-
-        <button type="button" onclick="press('0')">0</button>
-        <button type="button" onclick="press('.')">.</button>
-        <button type="button" onclick="press('+')">+</button>
-        <button type="submit" class="equals">=</button>
-
-        <!-- Scientific -->
-        <button type="button" onclick="press('(')">(</button>
-        <button type="button" onclick="press(')')">)</button>
-        <button type="button" onclick="press('sin(')">sin</button>
-        <button type="button" onclick="press('cos(')">cos</button>
-
-        <button type="button" onclick="press('tan(')">tan</button>
-        <button type="button" onclick="press('sqrt(')">√</button>
-        <button type="button" onclick="press('log(')">log</button>
-        <button type="button" onclick="press('^')">xʸ</button>
-
-        <!-- New Advanced -->
-        <button type="button" onclick="press('abs(')">abs</button>
-        <button type="button" onclick="press('factorial(')">n!</button>
-        <button type="button" onclick="press('%')">%</button>
-        <button type="button" onclick="clearDisplay()" style="background:#f44336;">C</button>
-
-        <!-- History -->
-        <button type="button" onclick="toggleHistory()" style="grid-column: span 4; background:#2196f3;">History</button>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Calculator</h1>
+      <div class="controls">
+        <button id="themeToggle" onclick="toggleTheme()">🌙</button>
+        <button id="historyBtn" onclick="toggleHistory()">📊</button>
       </div>
-    </form>
+    </div>
+
+    <div class="calculator">
+      <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="expression" id="display" class="display"
+         value="{{ result|default:expression }}" readonly>
+
+        <div class="buttons">
+          <!-- Row 1 -->
+          <button type="button" onclick="press('7')">7</button>
+          <button type="button" onclick="press('8')">8</button>
+          <button type="button" onclick="press('9')">9</button>
+          <button type="button" onclick="press('/')">÷</button>
+
+          <!-- Row 2 -->
+          <button type="button" onclick="press('4')">4</button>
+          <button type="button" onclick="press('5')">5</button>
+          <button type="button" onclick="press('6')">6</button>
+          <button type="button" onclick="press('*')">×</button>
+
+          <!-- Row 3 -->
+          <button type="button" onclick="press('1')">1</button>
+          <button type="button" onclick="press('2')">2</button>
+          <button type="button" onclick="press('3')">3</button>
+          <button type="button" onclick="press('-')">−</button>
+
+          <!-- Row 4 -->
+          <button type="button" onclick="press('0')">0</button>
+          <button type="button" onclick="press('.')">.</button>
+          <button type="button" onclick="press('+')">+</button>
+          <button type="submit" class="equals">=</button>
+
+          <!-- Scientific Row 1 -->
+          <button type="button" onclick="press('(')">(</button>
+          <button type="button" onclick="press(')')">)</button>
+          <button type="button" onclick="press('sin(')">sin</button>
+          <button type="button" onclick="press('cos(')">cos</button>
+
+          <!-- Scientific Row 2 -->
+          <button type="button" onclick="press('tan(')">tan</button>
+          <button type="button" onclick="press('sqrt(')">√</button>
+          <button type="button" onclick="press('log(')">log</button>
+          <button type="button" onclick="press('^')">xʸ</button>
+
+          <!-- Advanced Row -->
+          <button type="button" onclick="press('abs(')">abs</button>
+          <button type="button" onclick="press('factorial(')">n!</button>
+          <button type="button" onclick="press('%')">%</button>
+          <button type="button" onclick="clearDisplay()" class="clear-btn">C</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- Sidebar History -->
   <div id="historySidebar">
-    <h3>Calculation History</h3>
-    <ul>
+    <h3>History</h3>
+    <ul id="historyList">
       {% for entry in history %}
         <li>{{ entry }}</li>
+      {% empty %}
+        <li style="text-align: center; color: var(--text-secondary);">No history yet</li>
       {% endfor %}
     </ul>
-    <button id="closeHistory" onclick="toggleHistory()">Close</button>
+    <button id="closeHistory" onclick="closeHistory()">Close</button>
   </div>
 
   <script>
     const display = document.getElementById("display");
+    const themeToggle = document.getElementById("themeToggle");
+    const sidebar = document.getElementById("historySidebar");
+    const overlay = document.getElementById("overlay");
 
-    function press(value) {
-      display.value += value;
+    // Expression handling
+    function press(value) { 
+      if (display.value === "0" && value !== ".") {
+        display.value = value;
+      } else {
+        display.value += value;
+      }
     }
 
-    function clearDisplay() {
-      display.value = "";
+    function clearDisplay() { 
+      display.value = "0"; 
     }
 
+    // Sidebar toggle
     function toggleHistory() {
-      document.getElementById("historySidebar").classList.toggle("active");
+      sidebar.classList.toggle("active");
+      overlay.classList.toggle("active");
     }
+
+    function closeHistory() {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle("light");
+      themeToggle.textContent = isLight ? "☀️" : "🌙";
+      try {
+        localStorage.setItem("theme", isLight ? "light" : "dark");
+      } catch (e) {
+        console.log("localStorage not available");
+      }
+    }
+
+    // Remember theme (without localStorage dependency)
+    try {
+      if (localStorage.getItem("theme") === "light") {
+        document.body.classList.add("light");
+        themeToggle.textContent = "☀️";
+      }
+    } catch (e) {
+      console.log("localStorage not available");
+    }
+
+    // Full keyboard support
+    document.addEventListener("keydown", (e) => {
+      // Numbers
+      if (e.key >= "0" && e.key <= "9") {
+        e.preventDefault();
+        press(e.key);
+      }
+      // Operators
+      if (e.key === "+") { e.preventDefault(); press("+"); }
+      if (e.key === "-") { e.preventDefault(); press("-"); }
+      if (e.key === "*") { e.preventDefault(); press("*"); }
+      if (e.key === "/") { e.preventDefault(); press("/"); }
+      if (e.key === ".") { e.preventDefault(); press("."); }
+      if (e.key === "%") { e.preventDefault(); press("%"); }
+      if (e.key === "(") { e.preventDefault(); press("("); }
+      if (e.key === ")") { e.preventDefault(); press(")"); }
+      if (e.key === "^") { e.preventDefault(); press("^"); }
+      
+      // Enter to submit
+      if (e.key === "Enter") {
+        e.preventDefault();
+        document.querySelector(".equals").click();
+      }
+      
+      // Escape or C to clear
+      if (e.key === "Escape" || e.key === "c" || e.key === "C") {
+        e.preventDefault();
+        clearDisplay();
+      }
+      
+      // Backspace to delete last character
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        if (display.value.length > 1) {
+          display.value = display.value.slice(0, -1);
+        } else {
+          display.value = "0";
+        }
+      }
+      
+      // Close history with Escape when sidebar is open
+      if (e.key === "Escape" && sidebar.classList.contains("active")) {
+        closeHistory();
+      }
+    });
+
+    // Close sidebar when clicking outside
+    overlay.addEventListener("click", closeHistory);
   </script>
 </body>
 </html>
