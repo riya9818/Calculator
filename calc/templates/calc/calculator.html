@@ -116,6 +116,7 @@
        value="{{ result|default:expression }}" readonly>
 
       <div class="buttons">
+        <!-- Numbers -->
         <button type="button" onclick="press('7')">7</button>
         <button type="button" onclick="press('8')">8</button>
         <button type="button" onclick="press('9')">9</button>
@@ -136,7 +137,7 @@
         <button type="button" onclick="press('+')">+</button>
         <button type="submit" class="equals">=</button>
 
-        <!-- Scientific Row -->
+        <!-- Scientific -->
         <button type="button" onclick="press('(')">(</button>
         <button type="button" onclick="press(')')">)</button>
         <button type="button" onclick="press('sin(')">sin</button>
@@ -147,8 +148,14 @@
         <button type="button" onclick="press('log(')">log</button>
         <button type="button" onclick="press('^')">xʸ</button>
 
-        <button type="button" onclick="clearDisplay()" style="grid-column: span 2; background:#f44336;">C</button>
-        <button type="button" onclick="toggleHistory()" style="grid-column: span 2; background:#2196f3;">History</button>
+        <!-- New Advanced -->
+        <button type="button" onclick="press('abs(')">abs</button>
+        <button type="button" onclick="press('factorial(')">n!</button>
+        <button type="button" onclick="press('%')">%</button>
+        <button type="button" onclick="clearDisplay()" style="background:#f44336;">C</button>
+
+        <!-- History -->
+        <button type="button" onclick="toggleHistory()" style="grid-column: span 4; background:#2196f3;">History</button>
       </div>
     </form>
   </div>
