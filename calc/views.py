@@ -4,12 +4,11 @@ import math
 def calculator(request):
     result = None
     error = None
+    expression = ""
 
     if request.method == "POST":
         expression = request.POST.get("expression", "").strip()
-
         try:
-            # Use a safe evaluation method
             allowed_names = {
                 "sqrt": math.sqrt,
                 "pow": math.pow,
@@ -22,7 +21,6 @@ def calculator(request):
 
             result = eval(expression, {"__builtins__": None}, allowed_names)
 
-            # Save in session history
             history = request.session.get("history", [])
             history.insert(0, f"{expression} = {result}")
             request.session["history"] = history[:10]
@@ -38,5 +36,6 @@ def calculator(request):
     return render(request, "calc/calculator.html", {
         "result": result,
         "error": error,
-        "history": history
+        "history": history,
+        "expression": expression
     })

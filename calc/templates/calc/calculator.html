@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>Django Calculator</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-   <style>
+  <style>
     body {
       font-family: 'Poppins', sans-serif;
       background: #111;
@@ -13,6 +13,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
 
     .calculator {
@@ -20,6 +21,8 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 2;
     }
 
     .display {
@@ -43,7 +46,7 @@
 
     button {
       height: 60px;
-      font-size: 1.2em;
+      font-size: 1.1em;
       background: #333;
       border: none;
       border-radius: 8px;
@@ -64,26 +67,53 @@
       background: #e91e63;
     }
 
-    #history {
-      display: none;
-      margin-top: 15px;
+    /* Sidebar History */
+    #historySidebar {
+      position: fixed;
+      right: -300px;
+      top: 0;
+      width: 300px;
+      height: 100%;
       background: #111;
-      padding: 10px;
+      color: #fff;
+      padding: 20px;
+      box-shadow: -2px 0 10px rgba(255, 255, 255, 0.1);
+      transition: right 0.4s ease;
+      overflow-y: auto;
+      z-index: 5;
+    }
+
+    #historySidebar.active {
+      right: 0;
+    }
+
+    #historySidebar h3 {
+      margin-top: 0;
+      border-bottom: 1px solid #444;
+      padding-bottom: 10px;
+    }
+
+    #closeHistory {
+      background: #f44336;
+      border: none;
+      color: white;
+      padding: 8px 15px;
       border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
     }
 
-    #history ul {
-      padding-left: 20px;
+    #closeHistory:hover {
+      background: #d32f2f;
     }
-
   </style>
 </head>
 <body>
   <div class="calculator">
     <form method="POST">
       {% csrf_token %}
-      <!-- Display now shows result on submit -->
-      <input type="text" name="expression" id="display" class="display" value="{{ result|default:request.POST.expression }}" readonly>
+      <input type="text" name="expression" id="display" class="display"
+       value="{{ result|default:expression }}" readonly>
 
       <div class="buttons">
         <button type="button" onclick="press('7')">7</button>
@@ -106,36 +136,47 @@
         <button type="button" onclick="press('+')">+</button>
         <button type="submit" class="equals">=</button>
 
-        <button type="button" onclick="clearDisplay()" style="grid-column: span 4; background:#f44336;">C</button>
+        <!-- Scientific Row -->
+        <button type="button" onclick="press('(')">(</button>
+        <button type="button" onclick="press(')')">)</button>
+        <button type="button" onclick="press('sin(')">sin</button>
+        <button type="button" onclick="press('cos(')">cos</button>
 
-        <button type="button" onclick="toggleHistory()" style="grid-column: span 4; background:#2196f3;">History</button>
+        <button type="button" onclick="press('tan(')">tan</button>
+        <button type="button" onclick="press('sqrt(')">√</button>
+        <button type="button" onclick="press('log(')">log</button>
+        <button type="button" onclick="press('^')">xʸ</button>
+
+        <button type="button" onclick="clearDisplay()" style="grid-column: span 2; background:#f44336;">C</button>
+        <button type="button" onclick="toggleHistory()" style="grid-column: span 2; background:#2196f3;">History</button>
       </div>
     </form>
+  </div>
 
-    <!-- History panel -->
-    <div id="history">
-      <h4>Last Calculations:</h4>
-      <ul>
-        {% for entry in history %}
-          <li>{{ entry }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-
+  <!-- Sidebar History -->
+  <div id="historySidebar">
+    <h3>Calculation History</h3>
+    <ul>
+      {% for entry in history %}
+        <li>{{ entry }}</li>
+      {% endfor %}
+    </ul>
+    <button id="closeHistory" onclick="toggleHistory()">Close</button>
   </div>
 
   <script>
     const display = document.getElementById("display");
+
     function press(value) {
       display.value += value;
     }
+
     function clearDisplay() {
       display.value = "";
     }
 
     function toggleHistory() {
-      const h = document.getElementById("history");
-      h.style.display = h.style.display === "none" ? "block" : "none";
+      document.getElementById("historySidebar").classList.toggle("active");
     }
   </script>
 </body>
