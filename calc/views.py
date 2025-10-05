@@ -2,40 +2,36 @@ from django.shortcuts import render
 import math
 
 def calculator(request):
-    result = None
-    error = None
+    result = ""
     expression = ""
+    history = request.session.get("history", [])
 
     if request.method == "POST":
-        expression = request.POST.get("expression", "").strip()
+        expression = request.POST.get("expression", "")
+
         try:
-            allowed_names = {
-                "sqrt": math.sqrt,
-                "pow": math.pow,
-                "log": math.log,
-                "sin": lambda x: math.sin(math.radians(x)),
-                "cos": lambda x: math.cos(math.radians(x)),
-                "tan": lambda x: math.tan(math.radians(x)),
-                "__builtins__": {}
-            }
+            safe_expr = (
+                expression.replace("÷", "/")
+                .replace("×", "*")
+                .replace("^", "**")
+            )
 
-            result = eval(expression, {"__builtins__": None}, allowed_names)
+            allowed = {k: v for k, v in math.__dict__.items() if not k.startswith("__")}
+            allowed["abs"] = abs
+            allowed["round"] = round
 
-            history = request.session.get("history", [])
-            history.insert(0, f"{expression} = {result}")
-            request.session["history"] = history[:10]
+            result = eval(safe_expr, {"__builtins__": {}}, allowed)
 
-        except ZeroDivisionError:
-            error = "Error: Division by zero"
-        except ValueError:
-            error = "Error: Invalid input"
+            entry = f"{expression} = {result}"
+            history.append(entry)
+            history = history[-5:]
+            request.session["history"] = history
+
         except Exception:
-            error = "Error: Invalid expression"
+            result = "Error"
 
-    history = request.session.get("history", [])
-    return render(request, "calc/calculator.html", {
+    return render(request, "calculator.html", {
         "result": result,
-        "error": error,
+        "expression": expression,
         "history": history,
-        "expression": expression
     })
